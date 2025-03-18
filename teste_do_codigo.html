@@ -10,6 +10,8 @@
       --cor-sub-caixa: rgba(132, 27, 198, 0.23);
       --tamanho-relogio: 8vw; /* Tamanho inicial do relógio */
       --fonte-relogio: 'Courier New', monospace; /* Fonte inicial do relógio */
+      --cor-texto: #cf0552; /* Cor do texto do relógio */
+      --gradiente-texto: linear-gradient(45deg, #cf0552, #ff6f61); /* Gradiente inicial */
     }
 
     body {
@@ -18,34 +20,53 @@
       justify-content: center;
       align-items: center;
       height: 100vh;
-      background-color: #222;
-      color: #cf0552;
+      background: linear-gradient(135deg, #1a1a1a, #333);
+      color: var(--cor-texto);
       font-family: var(--fonte-relogio);
       text-align: center;
       padding: 20px;
       margin: 0;
-      overflow: hidden; /* Evita a barra de rolagem */
-      cursor: pointer; /* Muda o cursor para indicar que é clicável */
+      overflow: hidden;
+      cursor: pointer;
     }
 
     .caixa {
-      background-color: var(--cor-caixa);
-      padding: 12px;
-      margin: 12px 0;
-      border-radius: 20px;
+      background: var(--cor-caixa);
+      padding: 20px;
+      margin: 20px 0;
+      border-radius: 25px;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+      border: 2px solid rgba(255, 255, 255, 0.1);
     }
 
     .sub-caixa {
-      background-color: var(--cor-sub-caixa);
-      padding: 10px;
-      margin: 10px 0;
+      background: var(--cor-sub-caixa);
+      padding: 15px;
+      margin: 15px 0;
       border-radius: 20px;
+      box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.2);
+      border: 1px solid rgba(255, 255, 255, 0.1);
     }
 
     #relogio {
       font-size: var(--tamanho-relogio);
       font-family: var(--fonte-relogio);
       word-break: break-word;
+      background: var(--gradiente-texto);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      text-shadow: 0 0 10px rgba(207, 5, 82, 0.7), 0 0 20px rgba(207, 5, 82, 0.5);
+    }
+
+    #frase {
+      font-size: 2vw;
+      font-family: var(--fonte-relogio);
+      color: #fff;
+      margin-bottom: 20px;
+      padding: 10px;
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 10px;
+      border: 1px solid rgba(255, 255, 255, 0.2);
     }
 
     .controles {
@@ -53,30 +74,54 @@
       bottom: 0;
       left: 0;
       right: 0;
-      background-color: rgba(0, 0, 0, 0.8);
+      background: rgba(0, 0, 0, 0.8);
       padding: 15px;
       display: flex;
       justify-content: center;
       gap: 20px;
       flex-wrap: wrap;
+      backdrop-filter: blur(10px);
+      border-top: 1px solid rgba(255, 255, 255, 0.1);
     }
 
     .controles label {
       color: #fff;
       margin-right: 10px;
+      font-size: 14px;
     }
 
     .controles input[type="color"] {
       margin-right: 20px;
+      border: 2px solid rgba(255, 255, 255, 0.2);
+      border-radius: 5px;
+      cursor: pointer;
     }
 
     .controles input[type="range"] {
       width: 150px;
+      cursor: pointer;
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 5px;
     }
 
     .controles select {
       padding: 5px;
-      font-size: 16px;
+      font-size: 14px;
+      border: 2px solid rgba(255, 255, 255, 0.2);
+      border-radius: 5px;
+      background: rgba(0, 0, 0, 0.5);
+      color: #fff;
+      cursor: pointer;
+    }
+
+    .controles input[type="text"] {
+      padding: 5px;
+      font-size: 14px;
+      border: 2px solid rgba(255, 255, 255, 0.2);
+      border-radius: 5px;
+      background: rgba(0, 0, 0, 0.5);
+      color: #fff;
+      width: 200px;
     }
 
     /* Estilo das partículas */
@@ -84,10 +129,11 @@
       position: absolute;
       width: 10px;
       height: 10px;
-      background-color: #fff;
+      background: linear-gradient(45deg, #ff6f61, #cf0552);
       border-radius: 50%;
-      pointer-events: none; /* Impede que as partículas interfiram com cliques */
+      pointer-events: none;
       animation: particula-animacao 1s ease-out forwards;
+      box-shadow: 0 0 10px rgba(207, 5, 82, 0.7), 0 0 20px rgba(207, 5, 82, 0.5);
     }
 
     @keyframes particula-animacao {
@@ -115,6 +161,10 @@
       .controles input[type="range"] {
         width: 80%;
       }
+
+      #frase {
+        font-size: 4vw;
+      }
     }
 
     @media (min-width: 1200px) {
@@ -126,6 +176,7 @@
 </head>
 <body>
     <div class="caixa">
+        <div id="frase">Digite uma frase abaixo!</div>
         <div class="sub-caixa">
             <div id="relogio">00:00:00</div>
         </div>
@@ -142,7 +193,7 @@
         </div>
         <div>
             <label for="tamanhoRelogio">Tamanho do Relógio:</label>
-            <input type="range" id="tamanhoRelogio" min="4" max="20" value="8">
+            <input type="range" id="tamanhoRelogio" min="4" max="18" value="12">
         </div>
         <div>
             <label for="fonteRelogio">Fonte do Relógio:</label>
@@ -160,10 +211,29 @@
                 <option value="'Monoton', cursive">Monoton</option>
             </select>
         </div>
+        <div>
+            <label for="corTexto">Cor do Texto:</label>
+            <input type="color" id="corTexto" value="#cf0552">
+        </div>
+        <div>
+            <label for="gradienteTexto">Gradiente do Texto:</label>
+            <select id="gradienteTexto">
+                <option value="linear-gradient(45deg, #cf0552, #ff6f61)">Rosa/Amarelo</option>
+                <option value="linear-gradient(45deg, #00b09b, #96c93d)">Verde/Amarelo</option>
+                <option value="linear-gradient(45deg, #0072ff, #00c6ff)">Azul/Ciano</option>
+                <option value="linear-gradient(45deg, #ff416c, #ff4b2b)">Vermelho/Laranja</option>
+                <option value="linear-gradient(45deg, #8e2de2, #4a00e0)">Roxo/Azul</option>
+                <option value="linear-gradient(45deg, #ff9a9e, #fad0c4)">Rosa Claro</option>
+            </select>
+        </div>
+        <div>
+            <label for="inputFrase">Digite uma frase:</label>
+            <input type="text" id="inputFrase" placeholder="Digite uma frase">
+        </div>
     </div>
 
     <!-- Áudio para o efeito de som -->
-    <audio id="somClique" src="clicksoundeffect.mp3"></audio>
+    <audio id="somClique" src="https://www.soundjay.com/button/button-3.mp3"></audio>
 
     <script>
         function atualizarRelogio() {
@@ -193,6 +263,16 @@
             document.documentElement.style.setProperty('--fonte-relogio', fonte);
         }
 
+        // Função para alterar a cor do texto
+        function alterarCorTexto(cor) {
+            document.documentElement.style.setProperty('--cor-texto', cor);
+        }
+
+        // Função para alterar o gradiente do texto
+        function alterarGradienteTexto(gradiente) {
+            document.documentElement.style.setProperty('--gradiente-texto', gradiente);
+        }
+
         // Captura os inputs de cor
         const inputCorCaixa = document.getElementById('corCaixa');
         const inputCorSubCaixa = document.getElementById('corSubCaixa');
@@ -202,6 +282,15 @@
 
         // Captura o select de fonte do relógio
         const selectFonteRelogio = document.getElementById('fonteRelogio');
+
+        // Captura o input de cor do texto
+        const inputCorTexto = document.getElementById('corTexto');
+
+        // Captura o select de gradiente do texto
+        const selectGradienteTexto = document.getElementById('gradienteTexto');
+
+        // Captura o input de frase
+        const inputFrase = document.getElementById('inputFrase');
 
         // Atualiza as cores quando o usuário muda os valores dos inputs
         inputCorCaixa.addEventListener('input', () => {
@@ -222,10 +311,27 @@
             alterarFonteRelogio(selectFonteRelogio.value);
         });
 
-        // Define as cores, o tamanho e a fonte iniciais
+        // Atualiza a cor do texto quando o usuário muda o valor do input
+        inputCorTexto.addEventListener('input', () => {
+            alterarCorTexto(inputCorTexto.value);
+        });
+
+        // Atualiza o gradiente do texto quando o usuário muda a seleção
+        selectGradienteTexto.addEventListener('change', () => {
+            alterarGradienteTexto(selectGradienteTexto.value);
+        });
+
+        // Atualiza a frase quando o usuário digita no input
+        inputFrase.addEventListener('input', () => {
+            document.getElementById('frase').textContent = inputFrase.value || "Digite uma frase abaixo!";
+        });
+
+        // Define as cores, o tamanho, a fonte, a cor do texto e o gradiente iniciais
         alterarCores(inputCorCaixa.value, inputCorSubCaixa.value);
         alterarTamanhoRelogio(inputTamanhoRelogio.value);
         alterarFonteRelogio(selectFonteRelogio.value);
+        alterarCorTexto(inputCorTexto.value);
+        alterarGradienteTexto(selectGradienteTexto.value);
 
         // Efeito de som ao clicar
         const somClique = document.getElementById('somClique');
