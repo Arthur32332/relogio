@@ -5,51 +5,248 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Relógio em Tempo Real</title>
   <style>
+    :root {
+      --cor-caixa: rgba(5, 23, 112, 0.795);
+      --cor-sub-caixa: rgba(132, 27, 198, 0.23);
+      --tamanho-relogio: 8vw; /* Tamanho inicial do relógio */
+      --fonte-relogio: 'Courier New', monospace; /* Fonte inicial do relógio */
+    }
+
     body {
       display: flex;
+      flex-direction: column;
       justify-content: center;
       align-items: center;
       height: 100vh;
       background-color: #222;
       color: #cf0552;
-      font-family: 'Courier New', monospace;
+      font-family: var(--fonte-relogio);
       text-align: center;
       padding: 20px;
       margin: 0;
+      overflow: hidden; /* Evita a barra de rolagem */
+      cursor: pointer; /* Muda o cursor para indicar que é clicável */
+    }
+
+    .caixa {
+      background-color: var(--cor-caixa);
+      padding: 12px;
+      margin: 12px 0;
+      border-radius: 20px;
+    }
+
+    .sub-caixa {
+      background-color: var(--cor-sub-caixa);
+      padding: 10px;
+      margin: 10px 0;
+      border-radius: 20px;
     }
 
     #relogio {
-      font-size: 8vw; /* Escala com a largura da tela */
+      font-size: var(--tamanho-relogio);
+      font-family: var(--fonte-relogio);
       word-break: break-word;
     }
 
+    .controles {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background-color: rgba(0, 0, 0, 0.8);
+      padding: 15px;
+      display: flex;
+      justify-content: center;
+      gap: 20px;
+      flex-wrap: wrap;
+    }
+
+    .controles label {
+      color: #fff;
+      margin-right: 10px;
+    }
+
+    .controles input[type="color"] {
+      margin-right: 20px;
+    }
+
+    .controles input[type="range"] {
+      width: 150px;
+    }
+
+    .controles select {
+      padding: 5px;
+      font-size: 16px;
+    }
+
+    /* Estilo das partículas */
+    .particula {
+      position: absolute;
+      width: 10px;
+      height: 10px;
+      background-color: #fff;
+      border-radius: 50%;
+      pointer-events: none; /* Impede que as partículas interfiram com cliques */
+      animation: particula-animacao 1s ease-out forwards;
+    }
+
+    @keyframes particula-animacao {
+      0% {
+        transform: scale(1);
+        opacity: 1;
+      }
+      100% {
+        transform: scale(2);
+        opacity: 0;
+      }
+    }
+
     @media (max-width: 600px) {
-      #relogio {
-        font-size: 12vw;
+      :root {
+        --tamanho-relogio: 12vw;
+      }
+
+      .controles {
+        flex-direction: column;
+        align-items: center;
+        gap: 10px;
+      }
+
+      .controles input[type="range"] {
+        width: 80%;
       }
     }
 
     @media (min-width: 1200px) {
-      #relogio {
-        font-size: 6vw;
+      :root {
+        --tamanho-relogio: 6vw;
       }
     }
   </style>
 </head>
 <body>
-  <div id="relogio">00:00:00</div>
+    <div class="caixa">
+        <div class="sub-caixa">
+            <div id="relogio">00:00:00</div>
+        </div>
+    </div>
 
-  <script>
-    function atualizarRelogio() {
-      const agora = new Date();
-      const horas = agora.getHours().toString().padStart(2, '0');
-      const minutos = agora.getMinutes().toString().padStart(2, '0');
-      const segundos = agora.getSeconds().toString().padStart(2, '0');
-      document.getElementById('relogio').textContent = `${horas}:${minutos}:${segundos}`;
-    }
+    <div class="controles">
+        <div>
+            <label for="corCaixa">Cor da Caixa:</label>
+            <input type="color" id="corCaixa" value="#051770">
+        </div>
+        <div>
+            <label for="corSubCaixa">Cor da Sub-Caixa:</label>
+            <input type="color" id="corSubCaixa" value="#841bc6">
+        </div>
+        <div>
+            <label for="tamanhoRelogio">Tamanho do Relógio:</label>
+            <input type="range" id="tamanhoRelogio" min="4" max="20" value="8">
+        </div>
+        <div>
+            <label for="fonteRelogio">Fonte do Relógio:</label>
+            <select id="fonteRelogio">
+                <option value="'Courier New', monospace">Courier New</option>
+                <option value="'Arial', sans-serif">Arial</option>
+                <option value="'Times New Roman', serif">Times New Roman</option>
+                <option value="'Verdana', sans-serif">Verdana</option>
+                <option value="'Georgia', serif">Georgia</option>
+                <option value="'Comic Sans MS', cursive">Comic Sans MS</option>
+                <option value="'Impact', sans-serif">Impact</option>
+                <option value="'Pacifico', cursive">Pacifico</option>
+                <option value="'Roboto', sans-serif">Roboto</option>
+                <option value="'Lobster', cursive">Lobster</option>
+                <option value="'Monoton', cursive">Monoton</option>
+            </select>
+        </div>
+    </div>
 
-    setInterval(atualizarRelogio, 1000);
-    atualizarRelogio(); // Atualiza imediatamente ao carregar
-  </script>
+    <!-- Áudio para o efeito de som -->
+    <audio id="somClique" src="clicksoundeffect.mp3"></audio>
+
+    <script>
+        function atualizarRelogio() {
+            const agora = new Date();
+            const horas = agora.getHours().toString().padStart(2, '0');
+            const minutos = agora.getMinutes().toString().padStart(2, '0');
+            const segundos = agora.getSeconds().toString().padStart(2, '0');
+            document.getElementById('relogio').textContent = `${horas}:${minutos}:${segundos}`;
+        }
+
+        setInterval(atualizarRelogio, 1000);
+        atualizarRelogio(); // Atualiza imediatamente ao carregar
+
+        // Função para alterar as cores da caixa e sub-caixa
+        function alterarCores(corCaixa, corSubCaixa) {
+            document.documentElement.style.setProperty('--cor-caixa', corCaixa);
+            document.documentElement.style.setProperty('--cor-sub-caixa', corSubCaixa);
+        }
+
+        // Função para alterar o tamanho do relógio
+        function alterarTamanhoRelogio(tamanho) {
+            document.documentElement.style.setProperty('--tamanho-relogio', `${tamanho}vw`);
+        }
+
+        // Função para alterar a fonte do relógio
+        function alterarFonteRelogio(fonte) {
+            document.documentElement.style.setProperty('--fonte-relogio', fonte);
+        }
+
+        // Captura os inputs de cor
+        const inputCorCaixa = document.getElementById('corCaixa');
+        const inputCorSubCaixa = document.getElementById('corSubCaixa');
+
+        // Captura o input de tamanho do relógio
+        const inputTamanhoRelogio = document.getElementById('tamanhoRelogio');
+
+        // Captura o select de fonte do relógio
+        const selectFonteRelogio = document.getElementById('fonteRelogio');
+
+        // Atualiza as cores quando o usuário muda os valores dos inputs
+        inputCorCaixa.addEventListener('input', () => {
+            alterarCores(inputCorCaixa.value, inputCorSubCaixa.value);
+        });
+
+        inputCorSubCaixa.addEventListener('input', () => {
+            alterarCores(inputCorCaixa.value, inputCorSubCaixa.value);
+        });
+
+        // Atualiza o tamanho do relógio quando o usuário muda o valor do input
+        inputTamanhoRelogio.addEventListener('input', () => {
+            alterarTamanhoRelogio(inputTamanhoRelogio.value);
+        });
+
+        // Atualiza a fonte do relógio quando o usuário muda a seleção
+        selectFonteRelogio.addEventListener('change', () => {
+            alterarFonteRelogio(selectFonteRelogio.value);
+        });
+
+        // Define as cores, o tamanho e a fonte iniciais
+        alterarCores(inputCorCaixa.value, inputCorSubCaixa.value);
+        alterarTamanhoRelogio(inputTamanhoRelogio.value);
+        alterarFonteRelogio(selectFonteRelogio.value);
+
+        // Efeito de som ao clicar
+        const somClique = document.getElementById('somClique');
+
+        document.body.addEventListener('click', (event) => {
+            // Reproduz o som
+            somClique.currentTime = 0; // Reinicia o som se já estiver tocando
+            somClique.play();
+
+            // Cria partículas no local do clique
+            const particula = document.createElement('div');
+            particula.classList.add('particula');
+            particula.style.left = `${event.clientX}px`;
+            particula.style.top = `${event.clientY}px`;
+            document.body.appendChild(particula);
+
+            // Remove a partícula após a animação
+            setTimeout(() => {
+                particula.remove();
+            }, 1000);
+        });
+    </script>
 </body>
 </html>
